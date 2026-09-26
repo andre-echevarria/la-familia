@@ -1,0 +1,21 @@
+{
+  "name": "la-familia",
+  "version": "1.0.0",
+  "description": "La Familia: a family party game for phones",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/sim.js"
+  },
+  "dependencies": {
+    "@fontsource/quicksand": "^5.3.0",
+    "@fontsource/sacramento": "^5.3.0",
+    "express": "^5.2.1",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "private": true
+}
