@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FBF8F3">
+  <title>La Familia</title>
+  <link rel="icon" href="/img/abuela.png">
+  <link rel="apple-touch-icon" href="/img/abuela.png">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i><i class="c5"></i></div>
+  <main id="app"></main>
+  <section id="dance" hidden>
+    <div class="dance-head"><span>Practice your dancing!</span><b id="score">0</b></div>
+    <div id="stage"></div>
+  </section>
+  <button id="mycard" class="mycard-btn" data-peek hidden>Hold for my card</button>
+  <div id="peek" hidden></div>
+  <div id="toast" hidden></div>
+  <audio id="music" src="/audio/merengue.mp3" loop preload="auto"></audio>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
