@@ -30,14 +30,14 @@ const SCRIPT = {
     'Your job is to work as a family to find out who the Chusma are and uninvite them from the family parties. Good luck!',
     'Everyone, press and hold your card to peek at your role. Keep it a secret! Tap "Got it" when you\'re ready.',
   ],
-  roles: [
-    'Abuela can find out every Saturday night if someone is Chusma. If she\'s too vocal, she\'ll get found out!',
-    'The Cool Tio can vouch for one person every Saturday night. If they get blamed, they\'re safe.',
-    'The Tell-All Tia, when she gets eliminated, can ask about one person in front of everyone.',
-    'The Black Sheep is a bad influence. When eliminated, they take another person out with them.',
-    'The Primos and Primas help decide who is the Chusma and uninvite them before they ruin everything!',
-    'The Chusma are not part of the family. They create chaos and shift the blame.',
-  ],
+  roles: {
+    abuela: 'Abuela can find out every Saturday night if someone is Chusma. If she\'s too vocal, she\'ll get found out!',
+    tio: 'The Cool Tio can vouch for one person every Saturday night. If they get blamed, they\'re safe.',
+    tia: 'The Tell-All Tia, when she gets eliminated, can ask about one person in front of everyone.',
+    sheep: 'The Black Sheep is a bad influence. When eliminated, they take another person out with them.',
+    primo: 'The Primos and Primas help decide who is the Chusma and uninvite them before they ruin everything!',
+    chusma: 'The Chusma are not part of the family. They create chaos and shift the blame.',
+  },
   night: [
     'It\'s Saturday and everyone is invited to the family party. To prepare, everyone is practicing their dancing. Mesmerized by the music, the whole family dances along on their phones.',
     'While the music plays, the Chusma plan a different kind of move. They scheme on who to blame for the next round of chaos.',

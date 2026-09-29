@@ -16,7 +16,7 @@ Heads-up: on the free plan, the game goes to sleep after about 15 minutes with n
 
 - **Narrator:** open the link, tap **Be the narrator**, and show everyone the party code or QR code.
 - **Players:** scan the QR code or open the link, enter the code and your name, and pick Primo or Prima.
-- When at least 7 players have joined, the narrator taps **Deal the cards** and reads the lines on their screen. The merengue plays from the narrator's phone at night, so turn the volume up.
+- When at least 5 players have joined, the narrator taps **Deal the cards** and reads the lines on their screen. The merengue plays from the narrator's phone at night, so turn the volume up.
 - If someone's phone locks or the page reloads, they just open the link again and they're put right back in the game.
 
 ## Try it alone

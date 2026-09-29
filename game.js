@@ -3,12 +3,26 @@
 
 const { ROLE_INFO, SCENARIOS, SCRIPT } = require('./content');
 
-const MIN_PLAYERS = 7;
+const MIN_PLAYERS = 5;
 const MAX_PLAYERS = 20;
 
+// Matches the "Assigning the roles" card:
+// 5 = 1 Chusma, Tio, Tia, Abuela, 1 Primo. 6 = 1 Chusma, 2 Primos.
+// 7 adds the Black Sheep. 8 = 2 Primos. 9 = 3 Chusma, 2 Primos.
+// 10+: each even player count adds a Primo, each odd one adds a Chusma.
 function roleMix(n) {
-  const chusma = Math.ceil(n / 4);
-  return { chusma, abuela: 1, tio: 1, tia: 1, sheep: 1, primo: Math.max(0, n - chusma - 4) };
+  const base = { 5: [1, 1, 0], 6: [1, 2, 0], 7: [2, 1, 1], 8: [2, 2, 1], 9: [3, 2, 1] };
+  let chusma, primo, sheep;
+  if (n <= 9) [chusma, primo, sheep] = base[Math.max(5, n)];
+  else { chusma = 3 + Math.floor((n - 9) / 2); primo = 2 + Math.ceil((n - 9) / 2); sheep = 1; }
+  return { chusma, abuela: 1, tio: 1, tia: 1, sheep, primo };
+}
+
+function mixText(m) {
+  const parts = [`${m.chusma} Chusma`, 'Abuela', 'Cool Tio', 'Tell-All Tia'];
+  if (m.sheep) parts.push('Black Sheep');
+  parts.push(`${m.primo} Primo${m.primo === 1 ? '' : 's'}/Prima${m.primo === 1 ? '' : 's'}`);
+  return parts.join(', ');
 }
 
 class GameError extends Error {}
@@ -419,7 +433,7 @@ class Game {
     const v = {
       phase: this.phase, round: this.round, deadline: this.deadline, serverNow: this.now(),
       settings: { nightSecs: this.settings.nightSecs, discussSecs: this.settings.discussSecs },
-      mix: roleMix(Math.max(this.players.length, MIN_PLAYERS)), minPlayers: MIN_PLAYERS,
+      mix: roleMix(Math.max(this.players.length, MIN_PLAYERS)), mixText: mixText(roleMix(Math.max(this.players.length, MIN_PLAYERS))), minPlayers: MIN_PLAYERS,
       players: this.players.map(p => ({
         id: p.id, name: p.name, gender: p.gender, alive: p.alive, isBot: p.isBot, ready: p.ready,
         card: (!p.alive || seeAll) && p.role ? this.cardFor(p) : null,
@@ -478,7 +492,10 @@ class Game {
     const s = SCRIPT;
     switch (this.phase) {
       case 'lobby': return [];
-      case 'reveal': return [...s.intro, 'Let me explain the roles.', ...s.roles];
+      case 'reveal': {
+        const inGame = new Set(this.players.map(p => p.role));
+        return [...s.intro, 'Let me explain the roles.', ...Object.entries(s.roles).filter(([r]) => inGame.has(r)).map(([, line]) => line)];
+      }
       case 'night': return this.night.ready ? [s.wake] : s.night;
       case 'sunday': return [s.sundayOpen];
       case 'discuss': return [s.voteOpen(this.settings.discussSecs)];
