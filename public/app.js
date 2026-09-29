@@ -112,8 +112,7 @@
   function narratorLobby() {
     const url = `${location.origin}/?room=${view.code}`;
     const n = view.players.length;
-    const m = view.mix;
-    const mix = n >= view.minPlayers ? `${m.chusma} Chusma, Abuela, Cool Tio, Tell-All Tia, Black Sheep, ${m.primo} Primo${m.primo === 1 ? '' : 's'}/Prima${m.primo === 1 ? '' : 's'}` : `Need ${view.minPlayers - n} more to start`;
+    const mix = n >= view.minPlayers ? esc(view.mixText) : `Need ${view.minPlayers - n} more to start`;
     return `<img class="logo" src="/img/logo.png" alt="La Familia">
       <div class="card center"><p class="muted">Everyone scan or go to <b>${esc(location.host)}</b> and enter</p>
         <p class="code-big">${esc(view.code)}</p>${view.qr ? `<img class="qr" src="${view.qr}" alt="QR code to join">` : ''}
