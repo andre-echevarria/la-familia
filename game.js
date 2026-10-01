@@ -331,6 +331,7 @@ class Game {
       case 'recap': needNarr(); if (this.winner) fail('The game is over.'); this.toRecap(); break;
       case 'skipAbility': needNarr(); this.skipAbility(); break;
       case 'playAgain': needNarr(); if (this.phase !== 'over') fail('The game isn\'t over.'); this.deal(); break;
+      case 'restart': needNarr(); if (this.phase === 'lobby') fail('The game hasn\'t started.'); this.deal(); break;
       case 'toLobby': needNarr(); this.reset(); this.players = this.players.filter(p => !p.isBot); this.players.forEach(p => { p.role = null; p.alive = true; }); break;
       // players
       case 'ready': { const p = this.get(actor); if (p && this.phase === 'reveal') p.ready = true; break; }
