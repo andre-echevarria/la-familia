@@ -17,13 +17,19 @@
   let view = null;          // latest state from server
   let offset = 0;           // serverNow - Date.now()
   let session = store.get('lf-session'); // { code, token }
-  const ui = { gender: store.get('lf-gender') || 'm', name: store.get('lf-name') || '', agree: false, lastKey: '' };
+  const ui = { gender: store.get('lf-gender') || 'm', name: store.get('lf-name') || '', agree: false, reset: false, lastKey: '' };
 
   const socket = io({ transports: ['websocket', 'polling'] });
   socket.on('connect', () => { if (session) socket.emit('resume', session); else render(); });
   socket.on('joined', ({ code, token }) => { session = { code, token }; store.set('lf-session', session); history.replaceState(null, '', '/'); });
   socket.on('gone', () => { session = null; store.del('lf-session'); view = null; render(); });
-  socket.on('state', (v) => { offset = v.serverNow - Date.now(); view = v; render(); });
+  socket.on('state', (v) => {
+    offset = v.serverNow - Date.now();
+    // Tell players when the narrator resets mid-game
+    if (view && view.role === 'player' && view.round > 0 && view.phase !== 'over' && (v.phase === 'reveal' || v.phase === 'lobby')) toast('The narrator reset the game. ' + (v.phase === 'reveal' ? 'New cards!' : 'Back to the lobby.'));
+    if (view && view.phase !== v.phase) ui.reset = false;
+    view = v; render();
+  });
   socket.on('err', (m) => toast(m));
   socket.on('disconnect', () => toast('Reconnecting...'));
 
@@ -127,7 +133,22 @@
       <button class="green" data-act="start" ${n < view.minPlayers ? 'disabled' : ''}>Deal the cards</button>`;
   }
 
+  // Reset panel: lets the narrator restart mid-game (someone said too much, etc.)
+  function resetHTML() {
+    if (!ui.reset) return `<div style="height:28px"></div><button class="ghost small" data-local="reset" style="display:block;margin:0 auto">Reset game</button>`;
+    return `<div class="card" style="margin-top:28px"><h3>Reset the game?</h3>
+      <p class="small muted">Everyone's current cards are thrown out.</p>
+      <div class="stack"><button class="red" data-act="restart" data-music="stop">Deal new cards, same players</button>
+      <button class="ghost" data-act="toLobby" data-music="stop">Back to the lobby</button>
+      <button class="ghost small" data-local="reset">Cancel</button></div></div>`;
+  }
+
   function narratorScreen() {
+    const html = narratorPhase();
+    return view.phase === 'lobby' || view.phase === 'over' ? html : html + resetHTML();
+  }
+
+  function narratorPhase() {
     const v = view;
     const alive = v.players.filter((p) => p.alive);
     const agreePicker = () => ui.agree ? `<div class="card"><h3>Who did the family agree on?</h3>${pickList(alive.map((p) => p.id), { act: 'agreed' })}
@@ -302,6 +323,7 @@
     }
     if (what === 'host') socket.emit('create', { origin: location.origin });
     if (what === 'agree') { ui.agree = !ui.agree; render(); }
+    if (what === 'reset') { ui.reset = !ui.reset; render(); if (ui.reset) setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 50); }
     if (what === 'music') { if (music.paused) music.play().catch(() => {}); else music.pause(); setTimeout(render, 50); }
     if (what === 'leave') { socket.emit('leave'); session = null; store.del('lf-session'); view = null; render(); }
   }
